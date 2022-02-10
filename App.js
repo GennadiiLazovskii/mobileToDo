@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, View , Alert} from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
 import Navbar from "./src/components/Navbar/Navbar";
 import MainScreen from "./src/screens/MainScreen";
 import TodoScreen from "./src/screens/TodoScreen";
 
 export default function App() {
-  const [todoId, setTodoId] = useState("1");
+  const [todoId, setTodoId] = useState(null)
   const [todos, setTodos] = useState([
     { id: "1", title: "Выучить REACT native" },
   ]);
@@ -35,14 +35,25 @@ export default function App() {
           text: "Delete",
           style: "destructive",
           onPress: () => {
-            setTodoId(null)
-            setTodos((prev) => prev.filter((todo) => todo.id !== id))
-          }
+            setTodoId(null);
+            setTodos((prev) => prev.filter((todo) => todo.id !== id));
+          },
         },
       ],
       {
         cancelable: false,
       }
+    );
+  };
+
+  const updateTodo = (id, title) => {
+    setTodos((old) =>
+      old.map((todo) => {
+        if (todo.id === id) {
+          todo.title = title;
+        }
+        return todo;
+      })
     );
   };
 
@@ -57,7 +68,14 @@ export default function App() {
 
   if (todoId) {
     const selctedTodo = todos.find((todo) => todo.id === todoId);
-    content = <TodoScreen onRemove={removeTodo} goBack={() => setTodoId(null)} todo={selctedTodo} />;
+    content = (
+      <TodoScreen
+        onRemove={removeTodo}
+        goBack={() => setTodoId(null)}
+        todo={selctedTodo}
+        onSave={updateTodo}
+      />
+    );
   }
 
   return (
